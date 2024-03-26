@@ -1,58 +1,79 @@
 import React, { useState } from 'react';
 import { Text, View, Image, TouchableOpacity, TextInput, Alert, ScrollView } from 'react-native';
 import estilos from './estilos';
-import api from '../../servicos/api';
+import { buscarUsuario } from '../../servicos/requisicoes/usuarios';
 export default function Principal({ navigation }) {
     const [nomeUsuario, setNomeUsuario] = useState('');
     const [usuario, setUsuario] = useState({});
 
-    function Buscar(){
-        api.get('/users')
-        .then(
-            resposta => {
-                console.log(resposta.data)
-            }
-        ).catch(error => {
-            console.log(error)
-        })
+   async function buscar(){ // função assincrona que irá espera resultado da api
+
+    const resultado = await buscarUsuario(nomeUsuario) // realizado  a busca na api
+    
+    console.log(resultado) 
+
+    if(resultado){ // caso eu encontre, retorno o resultado
+        setUsuario('')
+        setUsuario(resultado)
+        
+
+    } else{ // caso não encontrei retorno um alertar
+ 
+        Alert.alert('Usuario não encontrado');
+        return setUsuario({}) // Retorno um objeto vazio para limpar as informações
     }
+   }
     return (
         <ScrollView>
             <View style={estilos.container}>
+                { // Aqui eu irei realizar uma verificação
+                    usuario?.login && // Caso encontre o login ele irá rederizar os componentes abaixo
                 <>
                     <View style={estilos.fundo} />
                     <View style={estilos.imagemArea}>
-                        <Image source={{ uri: 'https://avatars.githubusercontent.com/u/54721131?v=4' }} style={estilos.imagem} />
+                        <Image source={{ uri: usuario.avatar_url}} style={estilos.imagem} />
                     </View>
-                    <Text style={estilos.textoNome}>Nome do usuario</Text>
-                    <Text style={estilos.textoEmail}>Email do usuario</Text>
+                    <Text style={estilos.textoNome}>{usuario.name}</Text>
+                    <Text style={estilos.textoEmail}>{usuario.email}</Text>
                     <View style={estilos.seguidoresArea}>
                         <View style={estilos.seguidores}>
-                            <Text style={estilos.seguidoresNumero}>30</Text>
+                            <Text style={estilos.seguidoresNumero}>{usuario.followers}</Text>
                             <Text style={estilos.seguidoresTexto}>Seguidores</Text>
                         </View>
                         <View style={estilos.seguidores}>
-                            <Text style={estilos.seguidoresNumero}>40</Text>
+                            <Text style={estilos.seguidoresNumero}>{usuario.following}</Text>
                             <Text style={estilos.seguidoresTexto}>Seguindo</Text>
                         </View>
                     </View>
-                    <TouchableOpacity onPress={() => navigation.navigate('Repositorios')}>
+                    <TouchableOpacity 
+                    onPress={() => navigation.navigate('Repositorios',{id:usuario.id})}>
+                       
+                       
                         <Text style={estilos.repositorios}>
                             Ver os repositórios
                         </Text>
                     </TouchableOpacity>
                 </>
-
+                // Se não encontra só vai mostar os input e botão
+                } 
                 <TextInput
                     placeholder="Busque por um usuário"
                     autoCapitalize="none"
                     style={estilos.entrada}
+                    value={nomeUsuario} // aqui estou definindo o valor do texto na variavel usuario
+                    onChangeText={setNomeUsuario} // aqui estou usando o onChangeText,pois ao mudar o texto, ele faz alguma coisa
                 />
 
                 <TouchableOpacity
-                    onPress={() => Buscar()}
-                style={estilos.botao}>
-                    <Text style={estilos.textoBotao}>
+                    onPress={() => buscar()}
+                     style={estilos.botao}
+                     
+                     
+                     >
+                    <Text
+                     style={estilos.textoBotao}
+                     
+                     >
                         Buscar
                     </Text>
                 </TouchableOpacity>
