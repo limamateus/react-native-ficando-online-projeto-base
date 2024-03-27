@@ -1,25 +1,47 @@
 import React, { useState } from 'react';
 import { Text, View, TouchableOpacity, TextInput, Alert } from 'react-native';
 import estilos from './estilos';
-
+import {atualizarRepositorio} from '../../servicos/requisicoes/repositorio'
 export default function InfoRepositorio({ route, navigation }) {
-    const [nome, setNome] = useState('');
-    const [data, setData] = useState('');
-
+    const [nome, setNome] = useState(route.params.item.name); // Aqui estou definindo um stato padrão com o que vem da rota
+    const [data, setData] = useState(route.params.item.data);
+    
+    async function atualizar(){
+        const resultado = await atualizarRepositorio(
+            nome,
+            data,
+            route.params.item.postId,
+            route.params.item.id
+           
+        )
+            console.log(resultado)
+        if(resultado === 'Sucesso'){
+            Alert.alert('Repositorio Atualizado com sucesso')
+            navigation.goBack()
+        }else{
+            Alert.alert('Erro!')
+        }            
+        
+    }
     return (
         <View style={estilos.container}>
             <TextInput
                 placeholder="Nome do repositório"
                 autoCapitalize="none"
                 style={estilos.entrada}
+                value={nome} // 
+                onChangeText={setNome}
             />
             <TextInput
                 placeholder="Data de criação"
                 autoCapitalize="none"
                 style={estilos.entrada}
+                value={data}
+                onChangeText={setData}
             />
             <TouchableOpacity 
                 style={estilos.botao} 
+                onPress={atualizar}
             >
                 <Text style={estilos.textoBotao}>
                     Salvar

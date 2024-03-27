@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Text, View, FlatList, TouchableOpacity } from 'react-native';
 import estilos from './estilos';
 import { buscarRepositorio } from '../../servicos/requisicoes/repositorio';
+import { useIsFocused } from '@react-navigation/native';
 export default function Repositorios({ route, navigation }) {
     const [repo, setRepo] = useState([]);
+    const estaNaTela = useIsFocused();
 
     useEffect( async () => { // Aqui estou usando o hook useEfect para toca vez que o componente for rederizado ele realizar a requisição na api
         const resultado = await buscarRepositorio(route.params.id) // aqui estou passando para função o id 
         console.log(resultado)
         setRepo(resultado) // Mudo o estado padrão com os dados da api
-    },[])
+    },[estaNaTela])
+    
     return (
         <View style={estilos.container}>
                 <Text style={estilos.repositoriosTexto}>{repo.length} repositórios criados</Text>

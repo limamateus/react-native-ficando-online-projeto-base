@@ -9,3 +9,20 @@ export async function buscarRepositorio(id){
         return {}
     }
 }
+
+export async function atualizarRepositorio(nome,data,postId,id){
+    try {
+        console.log(nome, data, postId, id)
+            await api.put(`repos/${id}`,{
+                name: nome,
+                postId: postId,
+                data: data,
+                id: id
+            });
+    
+       return 'Sucesso'
+    } catch (error) {
+        console.log(error)
+        return 'Erro na atualização do Repositorio'
+    }
+}
