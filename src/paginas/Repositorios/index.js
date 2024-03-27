@@ -1,13 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { Text, View, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
 import estilos from './estilos';
-import { buscarRepositorio } from '../../servicos/requisicoes/repositorio';
+import { buscarRepositorioPorNome, buscarRepositorio} from '../../servicos/requisicoes/repositorio';
 import { useIsFocused } from '@react-navigation/native';
 export default function Repositorios({ route, navigation }) {
     const [repo, setRepo] = useState([]);
+    const [nomeRepositorio,setNomeRepositorio] = useState('')
+
     const estaNaTela = useIsFocused();
 
-    useEffect( async () => { // Aqui estou usando o hook useEfect para toca vez que o componente for rederizado ele realizar a requisição na api
+   async function buscarRepositorioPeloNome(){
+        if(nomeRepositorio === ''){
+           Alert.alert('Por favor preecha o nome do repositorio')
+        }else{
+            console.log(route.params.id,nomeRepositorio)
+            const resultado = await buscarRepositorioPorNome(route.params.id,nomeRepositorio)             
+            setRepo(resultado)
+            setNomeRepositorio('')
+
+        }
+     
+   }
+
+    useEffect( async  function data() { // Aqui estou usando o hook useEfect para toca vez que o componente for rederizado ele realizar a requisição na api
         const resultado = await buscarRepositorio(route.params.id) // aqui estou passando para função o id 
         console.log(resultado)
         setRepo(resultado) // Mudo o estado padrão com os dados da api
@@ -16,6 +31,22 @@ export default function Repositorios({ route, navigation }) {
     return (
         <View style={estilos.container}>
                 <Text style={estilos.repositoriosTexto}>{repo.length} repositórios criados</Text>
+                
+                 <TextInput
+                    placeholder="Busque pelo nome do Repositorio"
+                    autoCapitalize="none"
+                    style={estilos.entrada}
+                    value={nomeRepositorio} // aqui estou definindo o valor do texto na variavel usuario
+                    onChangeText={setNomeRepositorio} // aqui estou usando o onChangeText,pois ao mudar o texto, ele faz alguma coisa
+                />
+                    <TouchableOpacity 
+                    style={estilos.botao}  
+                    onPress={() => buscarRepositorioPeloNome()}                 
+                >
+                    <Text style={estilos.textoBotao}>Buscar Repositorio</Text>
+                </TouchableOpacity>
+
+                
                 <TouchableOpacity 
                     style={estilos.botao}
                     onPress={() => navigation.navigate('CriarRepositorio')}
