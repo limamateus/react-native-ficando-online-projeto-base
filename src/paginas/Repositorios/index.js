@@ -7,7 +7,7 @@ export default function Repositorios({ route, navigation }) {
     const [repo, setRepo] = useState([]);
     const [nomeRepositorio,setNomeRepositorio] = useState('')
 
-    const estaNaTela = useIsFocused();
+    const estaNaTela = useIsFocused(false);
 
    async function buscarRepositorioPeloNome(){
         if(nomeRepositorio === ''){
@@ -22,11 +22,14 @@ export default function Repositorios({ route, navigation }) {
      
    }
 
-    useEffect( async  function data() { // Aqui estou usando o hook useEfect para toca vez que o componente for rederizado ele realizar a requisição na api
+
+
+    useEffect( async () => { // Aqui estou usando o hook useEfect para toca vez que o componente for rederizado ele realizar a requisição na api
         const resultado = await buscarRepositorio(route.params.id) // aqui estou passando para função o id 
         console.log(resultado)
         setRepo(resultado) // Mudo o estado padrão com os dados da api
-    },[estaNaTela])
+       
+    },[])
     
     return (
         <View style={estilos.container}>
@@ -49,7 +52,7 @@ export default function Repositorios({ route, navigation }) {
                 
                 <TouchableOpacity 
                     style={estilos.botao}
-                    onPress={() => navigation.navigate('CriarRepositorio')}
+                    onPress={() => navigation.navigate('CriarRepositorio',{id: route.params.id})}
                 >
                     <Text style={estilos.textoBotao}>Adicionar novo repositório</Text>
                 </TouchableOpacity>

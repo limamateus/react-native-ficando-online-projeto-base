@@ -45,3 +45,33 @@ export async function atualizarRepositorio(nome,data,postId,id){
         return 'Erro na atualização do Repositorio'
     }
 }
+
+
+// Post
+export async function criarRepositorio(nome,data,postId){
+    try {
+        console.log(nome, data, postId)
+            await api.post(`repos/`,{
+                name: nome,
+                postId: postId,
+                data: data                
+            });
+    
+       return 'Sucesso'
+    } catch (error) {
+        console.log(error)
+        return 'Erro na criar do Repositorio'
+    }
+}
+
+// delete
+export async function deletarRepositorio(id){
+    try {       
+        console.log(id)
+            await api.delete(`repos/${id}`);    
+       return 'Sucesso'
+    } catch (error) {
+        console.log(error)
+        return 'Erro na deletar do Repositorio'
+    }
+}

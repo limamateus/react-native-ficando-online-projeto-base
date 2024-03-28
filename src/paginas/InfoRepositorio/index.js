@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Text, View, TouchableOpacity, TextInput, Alert } from 'react-native';
 import estilos from './estilos';
-import {atualizarRepositorio} from '../../servicos/requisicoes/repositorio'
+import {atualizarRepositorio,deletarRepositorio} from '../../servicos/requisicoes/repositorio'
 export default function InfoRepositorio({ route, navigation }) {
     const [nome, setNome] = useState(route.params.item.name); // Aqui estou definindo um stato padrão com o que vem da rota
     const [data, setData] = useState(route.params.item.data);
@@ -22,6 +22,17 @@ export default function InfoRepositorio({ route, navigation }) {
             Alert.alert('Erro!')
         }            
         
+    }
+
+
+    async function excluirRepositorio(){
+        const resultado = await deletarRepositorio(route.params.item.id)
+        if(resultado === 'Sucesso'){
+            Alert.alert('Repositorio deletado com sucesso!')
+            navigation.goBack()
+        }else{
+            Alert.alert('Erro ao deletar o repositorio!')
+        }
     }
     return (
         <View style={estilos.container}>
@@ -49,6 +60,7 @@ export default function InfoRepositorio({ route, navigation }) {
             </TouchableOpacity>
             <TouchableOpacity 
                 style={[estilos.botao, {backgroundColor: '#DD2B2B', marginTop: 10}]} 
+                onPress={() => excluirRepositorio()}
             >
                 <Text style={estilos.textoBotao}>
                     Deletar
