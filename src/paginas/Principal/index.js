@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { Text, View, Image, TouchableOpacity, TextInput, Alert, ScrollView } from 'react-native';
 import estilos from './estilos';
 import { buscarUsuario } from '../../servicos/requisicoes/usuarios';
+import { buscarUsuarioAluraPorNome } from '../../servicos/requisicoes/usuariosAlura';
+
 export default function Principal({ navigation }) {
     const [nomeUsuario, setNomeUsuario] = useState('');
     const [usuario, setUsuario] = useState({});
 
    async function buscar(){ // função assincrona que irá espera resultado da api
 
-    const resultado = await buscarUsuario(nomeUsuario) // realizado  a busca na api
+    const resultado = await buscarUsuarioAluraPorNome(nomeUsuario) // realizado  a busca na api
     
     console.log(resultado) 
 
@@ -46,7 +48,7 @@ export default function Principal({ navigation }) {
                         </View>
                     </View>
                     <TouchableOpacity 
-                    onPress={() => navigation.navigate('Repositorios',{id:usuario.id})}>
+                    onPress={() => navigation.navigate('Repositorios',{login:usuario.login})}>
                        
                        
                         <Text style={estilos.repositorios}>

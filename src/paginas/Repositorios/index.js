@@ -3,6 +3,8 @@ import { Text, View, FlatList, TouchableOpacity, TextInput, Alert } from 'react-
 import estilos from './estilos';
 import { buscarRepositorioPorNome, buscarRepositorio} from '../../servicos/requisicoes/repositorio';
 import { useIsFocused } from '@react-navigation/native';
+import { buscarRepositorioDoUsuarioAlura } from '../../servicos/requisicoes/usuariosAlura';
+
 export default function Repositorios({ route, navigation }) {
     const [repo, setRepo] = useState([]);
     const [nomeRepositorio,setNomeRepositorio] = useState('')
@@ -26,8 +28,8 @@ export default function Repositorios({ route, navigation }) {
    useEffect(() => {
     async function fetchRepositorio() { // // função assíncrona diretamente no useEffect não é suportado nas versões mais recentes do React
         try {
-            const resultado = await buscarRepositorio(route.params.id);
-            console.log(resultado);
+            const resultado = await buscarRepositorioDoUsuarioAlura(route.params.login);
+            console.log(route.params.name);
             setRepo(resultado);
         } catch (error) {
             console.error("Erro ao buscar repositório:", error);
